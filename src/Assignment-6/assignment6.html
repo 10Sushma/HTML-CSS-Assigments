@@ -12,15 +12,125 @@
 	<div id="container">
 
 	<!-- Start your code from here -->
-
-
+	<main>
+		<form class="form">
+			<div id="char">
+				<p class="dec" ><label class="label">Character:</label><br><span class="count" ><b>00</b></span></p>
+				<p class="dec"><label class="label">Threads:</label><br><span class="threadcount"><b>00</b></span></p>		
+			</div>
+			<div class="container">
+				<textarea class="text" onkeyup="textinfo(this)" required="" wrap="soft" placeholder="The character limit for each thread is 275" ></textarea>
+				<button type="submit" class="btn">Thread</button>
+			</div>
+			
+		</form>	
+		<div class="thread-box">
+			<div class="thread">
+				<span class="sl"></span><br>
+				✨<br>
+				Your threads will be here.🔥 <br><br>
+				The character limit for each thread is 275. <br><br>
+			</div>
+		</div>
+	</main>	
+	
+	
+	
 	<!-- End your code -->
 
 	</div>
 
 	<script type="text/javascript">
-	// write your javascript code here
+/*
+		let input=document.getElementById('charcount')
+		function charcountupdate(e){
+			count=e.value.length
+			input.innerHTML=e.value.length;
+		}
+*/			
 
+
+	const dom=(s)=>document.querySelector(s);
+	const form=dom('.form')
+	const charcount=dom('.count')
+	const threadcount=dom('.threadcount');
+	const threadbox=dom('.thread-box');
+	const size=275;
+	let threadArr=[]
+	function textinfo(e){
+		let length=e.value.length;
+		charcount.innerHTML=length;
+		threadcount.innerHTML=Math.ceil(length/size);
+		length>size ? (e.style.color='white'): (e.style.color='white');
+	}
+	function displaythread(listParent,arr=[]){
+		listParent.innerHTML=arr.map((el,i)=>{
+			return `
+			<artical class='thread' data-index="${i}">
+				<div class='tools'>
+					<span class=index>${i<9? '0'+(i+1):i+1}</span>
+					<span class='close' data-index='${i}'>X</span
+				</div>
+				<p class='thread-str'>
+					${el}
+				</p>
+			</artical>			
+			`;
+		}).join('')
+	}
+function cleanthread(s){
+	let splitonwhitespace=s.split(' ');
+	let result=[]
+	let totallength=0;
+	let sentance=' ';
+	for(let i=0;i<splitonwhitespace.length;i++){
+		let curword=splitonwhitespace[i];
+		let curwordlength=curword.length;
+
+		sentance+=curword+' ';
+		totallength+=curwordlength+1;
+		if (totallength>=size){
+			sentance=sentance.trim();
+			let lengthdiff=sentance.length-size;
+			if(lengthdiff>0){
+				let lastindexofwhitespace=sentance.lastIndexOf(' ');
+				sentance=sentance.slice(0,lastindexofwhitespace);
+				i--
+			}
+			result.push(sentance);
+			totallength=0;
+			sentance='';
+		}
+		if(i==splitonwhitespace.length-1 && totallength<=size &&sentance!==''){
+			result.push(sentance.trim());
+		}
+	}
+	
+	return result
+}
+function thread(ev){
+	ev.preventDefault();
+	const thread=dom('.thread');
+	threadArr=cleanthread(dom('.text').value)
+	displaythread(threadbox,threadArr);
+}
+form.addEventListener("submit",thread);
+
+
+function deleteThread(e) {
+	e.preventDefault();
+	const [el,index] = [e.target,e.target.dataset.index];
+	let txt = e.target.dataset.para;
+
+	if (el.classList.contains("close")) {
+
+		threadArr.splice(index, 1);
+
+		displaythread(threadbox, threadArr);
+	}
+}
+
+threadbox.addEventListener("click", deleteThread);
 	</script>
 
 </body>
